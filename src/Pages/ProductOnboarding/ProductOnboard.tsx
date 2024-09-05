@@ -13,12 +13,55 @@ import ProductVariations from "./Pages/ProductVariation";
 import Companyupload from "./Pages/Companyupload";
 import ProductImages from "./Pages/ProductImages";
 
+import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
+import firestore from "../../firestore";
+
 const aiUrl = (import.meta as any).env.VITE_BASE_AI_API;
 const backendUrl = (import.meta as any).env.VITE_BASE_API;
-const photAiUrl =
-  "https://prodapi.phot.ai/external/api/v2/user_activity/background-generator";
 const photAiApiKey = "667bd78dc03bdd1cb404e7a0_3668c766b56f00a1de05_apyhitools";
 const photoRoomApi = "sandbox_bf94ab81f439e8cc7c75b8e42607c85d9d4345d5";
+
+const uploadProduct = async (productData) => {
+  const data = {
+    name: productData.response.ProductName,
+    category: productData.ProductCategory,
+    pricing: productData.pricing,
+    quantity: productData.quantity,
+    tagline: productData.response.ProductTagline,
+    description: productData.response.ProductDescription,
+    variation: productData.response.ProductVariation,
+    images: productData.images.map((image) => {
+      return `https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${image}&apiKey=${photoRoomApi}`;
+    }),
+    about: productData.response.AboutProduct,
+    marketPainPoints: productData.response.MarketPainPoints,
+    customerAcquisition: productData.response.CustomerAcquisition,
+    marketEntryStrategy: productData.response.MarketEntryStrategy,
+    seoFriendlyTags: productData.response.SeoFriendlyTags,
+    regionalNames: productData.response.ProductRegionalNames,
+    sellerId: "+919452624111",
+    createdAt: new Date(),
+  };
+
+  console.log("Product data to be uploaded:", data);
+
+  try {
+    // First, create the document and get the generated ID
+    const docRef = await addDoc(collection(firestore, "products"), data);
+
+    // Now, update the document with the unique product key (upk)
+    await updateDoc(doc(firestore, "products", docRef.id), {
+      upk: docRef.id,
+    });
+
+    console.log(
+      "Product successfully written to Firestore with ID:",
+      docRef.id
+    );
+  } catch (error) {
+    console.error("Error writing product data: ", error);
+  }
+};
 
 const ProductOnBoarding: React.FC = () => {
   useEffect(() => {
@@ -42,6 +85,7 @@ const ProductOnBoarding: React.FC = () => {
     productVariation: "",
     companyLogo: "",
     images: [],
+    productQuantity: "",
   });
   const [uploading, setUploading] = useState<boolean>(false);
 
@@ -82,6 +126,8 @@ const ProductOnBoarding: React.FC = () => {
         },
       }
     );
+
+    // alert(JSON.stringify(response.data));
 
     return response.data;
   };
@@ -219,6 +265,7 @@ const ProductOnBoarding: React.FC = () => {
 
     if (step === 9) {
       console.log("this is is somethings");
+      console.log("Product data:", productData);
 
       const prompt = `Please change the background of the input Image such that they are Ecommerce ready. The product is called ${productData.ProductTitle}`;
       postData(
@@ -231,24 +278,29 @@ const ProductOnBoarding: React.FC = () => {
           productData.images,
           prompt
         );
+
+        const productDataWithResponse = {
+          inputLanguage: productData.inputLanguage,
+          shopName: productData.shopName,
+          sellerState: productData.sellerState,
+          productlanguage: productData.productlanguage,
+          productCategory: productData.productCategory,
+          productTitle: productData.ProductTitle,
+          pricing: productData.Pricing,
+          quantity: productData.productQuantity,
+          productDescription: productData.productDescription,
+          productVariation: productData.productVariation,
+          response: { ...response, newImages: newImages },
+          companyLogo: productData.companyLogo,
+          images: productData.images,
+          prompt: prompt,
+        };
+
+        uploadProduct(productDataWithResponse);
         console.log("New images:", newImages);
         navigate("/product-page", {
           state: {
-            productData: {
-              inputLanguage: productData.inputLanguage,
-              shopName: productData.shopName,
-              sellerState: productData.sellerState,
-              productlanguage: productData.productlanguage,
-              productCategory: productData.productCategory,
-              productTitle: productData.ProductTitle,
-              pricing: productData.Pricing,
-              productDescription: productData.productDescription,
-              productVariation: productData.productVariation,
-              response: { ...response, newImages: newImages },
-              companyLogo: productData.companyLogo,
-              images: productData.images,
-              prompt: prompt,
-            },
+            productData: productDataWithResponse,
           },
         });
       });

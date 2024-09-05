@@ -34,6 +34,8 @@ import MyStore from "./Pages/MyStore/MyStore";
 import Inventory from "./Pages/Inventory/Inventory";
 import DefaultLayout from "./layout/DefaultLayout";
 import LivePage from "./Pages/LivePage/LivePage";
+import Firestore from "./firestore";
+import ProductUpload from "./productUpload"
 
 import commands from "./voiceCommands";
 
@@ -337,6 +339,24 @@ function App() {
             <>
               <PageTitle title="Vyapar Launchpad" />
               <LivePage />
+            </>
+          }
+        />
+        <Route
+          path="/firestore"
+          element={
+            <>
+              <PageTitle title="Vyapar Launchpad" />
+              <Firestore />
+            </>
+          }
+        />
+        <Route
+          path="/product-upload"
+          element={
+            <>
+              <PageTitle title="Vyapar Launchpad" />
+              <ProductUpload />
             </>
           }
         />

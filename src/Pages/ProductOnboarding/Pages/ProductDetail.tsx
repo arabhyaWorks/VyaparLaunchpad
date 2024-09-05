@@ -62,6 +62,18 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({
           onBlur={handleSave}
           className="w-full border-2 border-[#EFF0F6] rounded-2xl px-4 py-2"
         />
+        <label className="block  text-[#170F49] text-md font-medium mb-2 mt-4">
+          <Text>Quantity</Text>
+        </label>
+        <input
+          placeholder={"Enter your product quantity here"}
+          value={productData.productQuantity}
+          onChange={(event) =>
+            setProductData({ ...productData, productQuantity: event.target.value })
+          }
+          onBlur={handleSave}
+          className="w-full border-2 border-[#EFF0F6] rounded-2xl px-4 py-2"
+        />
       </div>
     </div>
   );
