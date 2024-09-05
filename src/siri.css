@@ -1,0 +1,8 @@
+.siriButton{
+    /* height: 100,
+          width: 100,
+          transition: "all 0.1s ease-out", */
+    height: 100px;
+    width: 100px;
+    transition: all 0.1s ease-out;
+}

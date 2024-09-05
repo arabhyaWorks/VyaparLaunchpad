@@ -1,0 +1,307 @@
+{
+  ".env": "file",
+  ".eslintrc.cjs": "file",
+  ".git": {
+    ".git/COMMIT_EDITMSG": "file",
+    ".git/FETCH_HEAD": "file",
+    ".git/HEAD": "file",
+    ".git/branches": {},
+    ".git/config": "file",
+    ".git/description": "file",
+    ".git/hooks": {
+      ".git/hooks/applypatch-msg.sample": "file",
+      ".git/hooks/commit-msg.sample": "file",
+      ".git/hooks/fsmonitor-watchman.sample": "file",
+      ".git/hooks/post-update.sample": "file",
+      ".git/hooks/pre-applypatch.sample": "file",
+      ".git/hooks/pre-commit.sample": "file",
+      ".git/hooks/pre-merge-commit.sample": "file",
+      ".git/hooks/pre-push.sample": "file",
+      ".git/hooks/pre-rebase.sample": "file",
+      ".git/hooks/pre-receive.sample": "file",
+      ".git/hooks/prepare-commit-msg.sample": "file",
+      ".git/hooks/push-to-checkout.sample": "file",
+      ".git/hooks/sendemail-validate.sample": "file",
+      ".git/hooks/update.sample": "file"
+    },
+    ".git/index": "file",
+    ".git/info": {
+      ".git/info/exclude": "file"
+    },
+    ".git/logs": {
+      ".git/logs/HEAD": "file",
+      ".git/logs/refs": {
+        ".git/logs/refs/heads": {
+          ".git/logs/refs/heads/main": "file"
+        },
+        ".git/logs/refs/remotes": {
+          ".git/logs/refs/remotes/origin": {
+            ".git/logs/refs/remotes/origin/HEAD": "file",
+            ".git/logs/refs/remotes/origin/main": "file"
+          }
+        }
+      }
+    },
+    ".git/objects": {
+      ".git/objects/36": {
+        ".git/objects/36/5460296191621437424a06037cf104a8ea7e28": "file"
+      },
+      ".git/objects/b3": {
+        ".git/objects/b3/91cd8f4dd412f45a32dab426873f967f2fe946": "file"
+      },
+      ".git/objects/info": {},
+      ".git/objects/pack": {
+        ".git/objects/pack/pack-5e7783d8048db7a6f1fb3c575fd4a90651e1e4bc.idx": "file",
+        ".git/objects/pack/pack-5e7783d8048db7a6f1fb3c575fd4a90651e1e4bc.pack": "file",
+        ".git/objects/pack/pack-5e7783d8048db7a6f1fb3c575fd4a90651e1e4bc.rev": "file"
+      }
+    },
+    ".git/packed-refs": "file",
+    ".git/refs": {
+      ".git/refs/heads": {
+        ".git/refs/heads/main": "file"
+      },
+      ".git/refs/remotes": {
+        ".git/refs/remotes/origin": {
+          ".git/refs/remotes/origin/HEAD": "file",
+          ".git/refs/remotes/origin/main": "file"
+        }
+      },
+      ".git/refs/tags": {}
+    }
+  },
+  ".gitignore": "file",
+  "README.md": "file",
+  "components.json": "file",
+  "getstructure.mjs": "file",
+  "global.d.ts": "file",
+  "index.html": "file",
+  "package-lock.json": "file",
+  "package.json": "file",
+  "postcss.config.js": "file",
+  "public": {
+    "public/data.json": "file",
+    "public/vite.svg": "file"
+  },
+  "src": {
+    "src/App.css": "file",
+    "src/App.tsx": "file",
+    "src/AppContext.tsx": "file",
+    "src/Bhasini": {
+      "src/Bhasini/NMT.tsx": "file",
+      "src/Bhasini/Text.tsx": "file"
+    },
+    "src/Contexts": {
+      "src/Contexts/StoreOnboarding.tsx": "file"
+    },
+    "src/Pages": {
+      "src/Pages/Authentication": {
+        "src/Pages/Authentication/Signin.tsx": "file",
+        "src/Pages/Authentication/Signup.tsx": "file"
+      },
+      "src/Pages/Dashboard": {
+        "src/Pages/Dashboard/Dashboard.tsx": "file"
+      },
+      "src/Pages/Inventory": {
+        "src/Pages/Inventory/Inventory.tsx": "file",
+        "src/Pages/Inventory/Table.tsx": "file"
+      },
+      "src/Pages/MyStore": {
+        "src/Pages/MyStore/MyStore.tsx": "file"
+      },
+      "src/Pages/ProductOnboarding": {
+        "src/Pages/ProductOnboarding/Pages": {
+          "src/Pages/ProductOnboarding/Pages/Companyupload.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/ProductDescription.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/ProductDetail.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/ProductImages.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/ProductVariation.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/SearchLang.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/SelectMethod.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/SellerDetail.tsx": "file",
+          "src/Pages/ProductOnboarding/Pages/langu.tsx": "file"
+        },
+        "src/Pages/ProductOnboarding/ProductOnboard.tsx": "file",
+        "src/Pages/ProductOnboarding/ProductPage.tsx": "file",
+        "src/Pages/ProductOnboarding/Stepper.tsx": "file",
+        "src/Pages/ProductOnboarding/navBar.css": "file"
+      },
+      "src/Pages/StoreOnboarding": {
+        "src/Pages/StoreOnboarding/BankDetails.tsx": "file",
+        "src/Pages/StoreOnboarding/CancelledCheck.tsx": "file",
+        "src/Pages/StoreOnboarding/Step1.tsx": "file",
+        "src/Pages/StoreOnboarding/Step10.tsx": "file",
+        "src/Pages/StoreOnboarding/Step2.tsx": "file",
+        "src/Pages/StoreOnboarding/Step3.tsx": "file",
+        "src/Pages/StoreOnboarding/Step4.css": "file",
+        "src/Pages/StoreOnboarding/Step4.tsx": "file",
+        "src/Pages/StoreOnboarding/Step5.tsx": "file",
+        "src/Pages/StoreOnboarding/Step6.tsx": "file",
+        "src/Pages/StoreOnboarding/Step7.tsx": "file",
+        "src/Pages/StoreOnboarding/Step8.tsx": "file",
+        "src/Pages/StoreOnboarding/Step9.tsx": "file",
+        "src/Pages/StoreOnboarding/StoreOnboard.tsx": "file",
+        "src/Pages/StoreOnboarding/Success.tsx": "file"
+      },
+      "src/Pages/Voice": {
+        "src/Pages/Voice/Voice.css": "file",
+        "src/Pages/Voice/Voice.tsx": "file"
+      }
+    },
+    "src/assets": {
+      "src/assets/Icons": {
+        "src/assets/Icons/Food.svg": "file",
+        "src/assets/Icons/addIcon.svg": "file",
+        "src/assets/Icons/backIcon.svg": "file",
+        "src/assets/Icons/beauty.svg": "file",
+        "src/assets/Icons/blackSearchIcon.svg": "file",
+        "src/assets/Icons/copyButton.svg": "file",
+        "src/assets/Icons/down.svg": "file",
+        "src/assets/Icons/electronics.svg": "file",
+        "src/assets/Icons/fashion.svg": "file",
+        "src/assets/Icons/fitness.svg": "file",
+        "src/assets/Icons/hotel.svg": "file",
+        "src/assets/Icons/liquor.svg": "file",
+        "src/assets/Icons/personOutline.svg": "file",
+        "src/assets/Icons/pharmacy.svg": "file",
+        "src/assets/Icons/photos.svg": "file",
+        "src/assets/Icons/search.svg": "file",
+        "src/assets/Icons/searchOutline.svg": "file",
+        "src/assets/Icons/start.svg": "file",
+        "src/assets/Icons/stationary.svg": "file",
+        "src/assets/Icons/up.svg": "file",
+        "src/assets/Icons/user.svg": "file"
+      },
+      "src/assets/LottieAnimation": {
+        "src/assets/LottieAnimation/success.json": "file"
+      },
+      "src/assets/Onboarding": {
+        "src/assets/Onboarding/Ecom.svg": "file",
+        "src/assets/Onboarding/Setting.svg": "file",
+        "src/assets/Onboarding/call.svg": "file",
+        "src/assets/Onboarding/company.svg": "file",
+        "src/assets/Onboarding/contact.svg": "file",
+        "src/assets/Onboarding/healthcare.svg": "file",
+        "src/assets/Onboarding/mail.svg": "file",
+        "src/assets/Onboarding/marketing.svg": "file",
+        "src/assets/Onboarding/upload.svg": "file"
+      },
+      "src/assets/SelectMethod": {
+        "src/assets/SelectMethod/InputIcon.svg": "file",
+        "src/assets/SelectMethod/voiceImg.svg": "file"
+      },
+      "src/assets/Sidebar": {
+        "src/assets/Sidebar/Logout.svg": "file",
+        "src/assets/Sidebar/Setting.svg": "file",
+        "src/assets/Sidebar/appStore.svg": "file",
+        "src/assets/Sidebar/home.svg": "file",
+        "src/assets/Sidebar/language-square.svg": "file",
+        "src/assets/Sidebar/playStore.svg": "file",
+        "src/assets/Sidebar/player": {
+          "src/assets/Sidebar/player/10 sec aead.svg": "file",
+          "src/assets/Sidebar/player/10 sec back.svg": "file",
+          "src/assets/Sidebar/player/back.svg": "file",
+          "src/assets/Sidebar/player/chapter.svg": "file",
+          "src/assets/Sidebar/player/download.svg": "file",
+          "src/assets/Sidebar/player/forward.svg": "file",
+          "src/assets/Sidebar/player/play 1.svg": "file",
+          "src/assets/Sidebar/player/speed.svg": "file",
+          "src/assets/Sidebar/player/translate.svg": "file"
+        },
+        "src/assets/Sidebar/player.svg": "file",
+        "src/assets/Sidebar/subscriptions.svg": "file",
+        "src/assets/Sidebar/upload image.svg": "file",
+        "src/assets/Sidebar/upload link.svg": "file",
+        "src/assets/Sidebar/upload pdf.svg": "file",
+        "src/assets/Sidebar/upload.svg": "file",
+        "src/assets/Sidebar/your audiobooks.svg": "file"
+      },
+      "src/assets/images": {
+        "src/assets/images/OverlayBackground.svg": "file",
+        "src/assets/images/ProLinguisticSathi.svg": "file",
+        "src/assets/images/ill1.svg": "file",
+        "src/assets/images/image.png": "file",
+        "src/assets/images/onboard1.png": "file",
+        "src/assets/images/onboard2.png": "file",
+        "src/assets/images/onboard3.png": "file",
+        "src/assets/images/profile.png": "file",
+        "src/assets/images/sareeImage.png": "file",
+        "src/assets/images/signup.svg": "file",
+        "src/assets/images/storeImg.png": "file"
+      }
+    },
+    "src/components": {
+      "src/components/Header": {
+        "src/components/Header/DarkModeSwitcher.tsx": "file",
+        "src/components/Header/DropdownMessage.tsx": "file",
+        "src/components/Header/DropdownNotification.tsx": "file",
+        "src/components/Header/DropdownUser.tsx": "file",
+        "src/components/Header/index.tsx": "file"
+      },
+      "src/components/Sidebar": {
+        "src/components/Sidebar/SidebarLinkGroup.tsx": "file",
+        "src/components/Sidebar/index.tsx": "file"
+      },
+      "src/components/common": {
+        "src/components/common/AddProduct.tsx": "file",
+        "src/components/common/Alert.tsx": "file",
+        "src/components/common/BottomBar.tsx": "file",
+        "src/components/common/Breadcum.tsx": "file",
+        "src/components/common/CardDataStats.tsx": "file",
+        "src/components/common/Header.tsx": "file",
+        "src/components/common/Loader.tsx": "file",
+        "src/components/common/Navbar.tsx": "file",
+        "src/components/common/PageTitle.tsx": "file",
+        "src/components/common/ProSathi.tsx": "file",
+        "src/components/common/TableHeader.tsx": "file"
+      },
+      "src/components/ui": {
+        "src/components/ui/alert-dialog.tsx": "file",
+        "src/components/ui/button.tsx": "file",
+        "src/components/ui/command.tsx": "file",
+        "src/components/ui/dialog.tsx": "file",
+        "src/components/ui/popover.tsx": "file"
+      }
+    },
+    "src/hooks": {
+      "src/hooks/auth.tsx": "file",
+      "src/hooks/fireToast.tsx": "file",
+      "src/hooks/useColorMode.tsx": "file",
+      "src/hooks/useLocalStorage.tsx": "file",
+      "src/hooks/useVoice.tsx": "file"
+    },
+    "src/index.css": "file",
+    "src/js": {
+      "src/js/us-aea-en.js": "file"
+    },
+    "src/layout": {
+      "src/layout/DefaultLayout.tsx": "file"
+    },
+    "src/lib": {
+      "src/lib/utils.ts": "file"
+    },
+    "src/main.tsx": "file",
+    "src/redux": {
+      "src/redux/slice.ts": "file",
+      "src/redux/store.ts": "file",
+      "src/redux/type.ts": "file"
+    },
+    "src/things.tsx": "file",
+    "src/types": {
+      "src/types/brand.ts": "file",
+      "src/types/chat.ts": "file",
+      "src/types/package.ts": "file",
+      "src/types/product.ts": "file"
+    },
+    "src/utils": {
+      "src/utils/axiosInstance.js": "file"
+    },
+    "src/vite-env.d.ts": "file"
+  },
+  "tailwind.config.js": "file",
+  "tsconfig.app.json": "file",
+  "tsconfig.json": "file",
+  "tsconfig.node.json": "file",
+  "vercel.json": "file",
+  "vite.config.ts": "file"
+}

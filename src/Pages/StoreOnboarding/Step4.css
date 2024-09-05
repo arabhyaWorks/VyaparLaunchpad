@@ -1,0 +1,58 @@
+.custom-input-style {
+  border-left: 1.5px solid #c5c4c4;
+  border-right: 1.5px solid #c5c4c4;
+  border-bottom: 1.5px solid #c5c4c4;
+  outline: none;
+  width: 100%;
+  /* padding: 0.5rem 0.75rem; */
+  font-size: 1.125rem;
+  font-weight: 300;
+  background-color: transparent;
+  color: black;
+  padding: 15px;
+}
+.custom-name-style {
+  border: 1.5px solid #c5c4c4;
+  outline: none;
+  width: 100%;
+  font-size: 1.125rem;
+  font-weight: 300;
+  background-color: transparent;
+  color: black;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+.custom-name-style::placeholder {
+  color: black;
+}
+
+.custom-input-style::placeholder {
+  color: black;
+}
+
+.top {
+  border-top: 1.5px solid #c5c4c4;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.bottom {
+  border-bottom: 1.5px solid #c5c4c4;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.custom-dropdown-style {
+  border: 1.5px solid #c5c4c4;
+  outline: none;
+  width: 100%;
+  border-radius: 10px;
+  font-size: 1.125rem;
+  font-weight: 300;
+  background-color: transparent;
+  color: black;
+  padding: 15px;
+  margin-bottom: 15px;
+  /* padding-right: 10px; */
+}
