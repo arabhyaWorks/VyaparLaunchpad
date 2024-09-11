@@ -16,7 +16,9 @@ const DefaultLayout = ({ children }) => {
     "/signin",
     "/signup",
     "/",
-    "/firestore"
+    "/firestore",
+    "/abhipray",
+    "/testing",
   ];
 
   const isLiveRoute = pathname.startsWith("/live");

@@ -58,7 +58,7 @@ const Firestore = () => {
 
   useEffect(() => {
     // getTodayOrders();
-    getOrdersByDateRange("2024-09-01", "2024-09-07");
+    getOrdersByDateRange("2024-09-01", "2024-09-12");
   }, []);
   return (
     <div>

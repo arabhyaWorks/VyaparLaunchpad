@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState, useRef } from "react";
+import React, { useEffect, useContext, useState, useRef } from "react";
 import {
   BrowserRouter,
   Link,
@@ -14,109 +14,27 @@ import SpeechRecognition, {
 import { AppContext } from "./AppContext";
 import "./App.css";
 import playTTS from "./Bhasini/tts";
-
-import { Player } from "@lottiefiles/react-lottie-player";
-import siri from "../src/assets/LottieAnimation/siri3.json";
 import SiriAnimation from "./SiriAnimation";
-
 import Loader from "./components/common/Loader";
-import PageTitle from "./components/common/PageTitle";
-
-import SignUp from "./Pages/Authentication/Signup";
-import SignIn from "./Pages/Authentication/Signin";
-
-import Dashboard from "./Pages/Dashboard/Dashboard";
-import StoreOnboarding from "./Pages/StoreOnboarding/StoreOnboard";
-import ProductOnBoarding from "./Pages/ProductOnboarding/ProductOnboard";
-import ProductPage from "./Pages/ProductOnboarding/ProductPage";
-import Voice from "./Pages/Voice/Voice";
-import MyStore from "./Pages/MyStore/MyStore";
-import Inventory from "./Pages/Inventory/Inventory";
 import DefaultLayout from "./layout/DefaultLayout";
-import LivePage from "./Pages/LivePage/LivePage";
-import Firestore from "./firestore";
-import ProductUpload from "./productUpload"
-
 import commands from "./voiceCommands";
+import Pages from "./Routes";
 
 const apiUrl = (import.meta as any).env.VITE_BASE_API;
 
 function App() {
   const navigate = useNavigate();
-
-  const { loading, setLoading } = useContext(AppContext);
   const { pathname } = useLocation();
+  const { loading, setLoading } = useContext(AppContext) || {};
 
   const [redirectUrl, setRedirectUrl] = useState("");
   const [isInValid, setIsInValid] = useState(false);
 
-  const {
-    transcript,
-    listening,
-    resetTranscript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition({
+  const { transcript, listening, resetTranscript } = useSpeechRecognition({
     commands: [
       {
         command: commands,
-        callback: (redirectPage) => {
-          redirectPage = redirectPage.toLowerCase();
-
-          console.log("Redirecting to:", redirectPage);
-          if (
-            redirectPage.includes("my store") ||
-            redirectPage.includes("mystore")
-          ) {
-            // navigate("/mystore");
-            navigate("/mystore");
-          } else if (redirectPage.includes("dashboard")) {
-            navigate("/dashboard");
-          } else if (
-            redirectPage.includes("kya") ||
-            redirectPage.includes("kyaa")
-          ) {
-            console.log("What is Vyapar Sathi?");
-            console.log(redirectPage);
-          } else if (redirectPage.includes("inventory")) {
-            navigate("/inventory");
-          } else if (
-            redirectPage.includes("what") ||
-            redirectPage.includes("What")
-          ) {
-            console.log("What is Vyapar Sathi?");
-            console.log(redirectPage);
-            const data =
-              "The Open Network for Digital Commerce (ONDC) is an initiative launched by the Government of India to democratize digital commerce and create a level playing field for small and medium enterprises (SMEs). ONDC aims to promote open networks developed on open-sourced methodology, using open specifications and open network protocols, independent of any specific platform.";
-            playTTS(data, "hi");
-          } else if (redirectPage.includes("inventory")) {
-            navigate("/inventory");
-          } else if (
-            redirectPage.includes("sign in") ||
-            redirectPage.includes("signin")
-          ) {
-            navigate("/signin");
-          } else if (
-            redirectPage.includes("sign up") ||
-            redirectPage.includes("signup")
-          ) {
-            navigate("/signup");
-          } else if (redirectPage.includes("voice")) {
-            navigate("/voice");
-          } else if (
-            redirectPage.includes("store onboarding") ||
-            redirectPage.includes("store-onboarding") ||
-            redirectPage.includes("dukaan") ||
-            redirectPage.includes("store") ||
-            redirectPage.includes("shop") ||
-            redirectPage.includes("dukan")
-          ) {
-            navigate("/store-onboarding");
-          } else {
-            setIsInValid(true);
-          }
-
-          console.log("Redirecting to:", redirectPage);
-        },
+        callback: handleVoiceCommand,
       },
     ],
   });
@@ -131,6 +49,7 @@ function App() {
     "store-onboarding",
     "voice",
   ];
+
   const urls = {
     home: "/",
     dashboard: "/dashboard",
@@ -142,12 +61,65 @@ function App() {
     voice: "/voice",
   };
 
+  function handleVoiceCommand(redirectPage: string) {
+    redirectPage = redirectPage.toLowerCase();
+    console.log("Redirecting to:", redirectPage);
+
+    const pageMappings = [
+      { keywords: ["my store", "mystore"], path: "/mystore" },
+      { keywords: ["dashboard"], path: "/dashboard" },
+      { keywords: ["inventory"], path: "/inventory" },
+      { keywords: ["sign in", "signin"], path: "/signin" },
+      { keywords: ["sign up", "signup"], path: "/signup" },
+      { keywords: ["voice"], path: "/voice" },
+      {
+        keywords: [
+          "store onboarding",
+          "store-onboarding",
+          "dukaan",
+          "store",
+          "shop",
+          "dukan",
+        ],
+        path: "/store-onboarding",
+      },
+    ];
+
+    const pageMatch = pageMappings.find((page) =>
+      page.keywords.some((keyword) => redirectPage.includes(keyword))
+    );
+
+    if (pageMatch) {
+      navigate(pageMatch.path);
+    } else if (
+      redirectPage.includes("ondc") ||
+      redirectPage.includes("ondc") ||
+      redirectPage.includes("vyapar")
+    ) {
+      handleQueryAboutVyapar();
+    } else {
+      console.log("Invalid command.");
+      console.log(redirectPage, transcript);
+      setIsInValid(true);
+    }
+  }
+
+  function handleQueryAboutVyapar() {
+    const data =
+      "The Open Network for Digital Commerce (ONDC) is an initiative launched by the Government of India to democratize digital commerce and create a level playing field for small and medium enterprises (SMEs). ONDC promotes open networks developed on open-sourced methodology.";
+    playTTS(data, "hi");
+    console.log("Responding to query about Vyapar.");
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
+    if (setLoading) {
+      const timer = setTimeout(() => setLoading(false), 1000);
+      return () => clearTimeout(timer);
+    }
   }, [setLoading]);
 
   useEffect(() => {
@@ -159,19 +131,21 @@ function App() {
   useEffect(() => {
     fetch(apiUrl)
       .then((response) => response.json())
-      .then((data) => {
-        console.log("Connection successful:", data);
-      })
-      .catch((error) => {
-        console.error("Error connecting to server:", error);
-      });
+      .then((data) => console.log("Connection successful:", data))
+      .catch((error) => console.error("Error connecting to server:", error));
   }, []);
 
   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
-    return <div>Browser doesn't support speech recognition.</div>;
+    return (
+      <div>
+        <h1 style={{ color: "black" }}>
+          Browser doesn't support speech recognition.
+        </h1>
+      </div>
+    );
   }
 
-  const transcriptRef = useRef(null);
+  const transcriptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (transcriptRef.current) {
@@ -183,19 +157,13 @@ function App() {
     <Loader />
   ) : (
     <DefaultLayout>
-      <div className="asis-cont">
+      <div style={{ display: "none" }} className="asis-cont">
         <div
           className={`assitant ${
             pathname === "/store-onboarding" ? "left" : "right"
           }`}
         >
           <div className="asis">
-            {/* <h1>Vyapar Sathi</h1> */}
-            {/* <p>Microphone: {listening ? "on" : "off"}</p> */}
-            {/* <button onClick={SpeechRecognition.startListening}>Start</button>
-            <button onClick={SpeechRecognition.stopListening}>Stop</button>
-            <button onClick={resetTranscript}>Reset</button> */}
-
             <div className="transcript-cont" ref={transcriptRef}>
               <p className="transcript">
                 {transcript.length === 0
@@ -203,11 +171,6 @@ function App() {
                   : transcript}
               </p>
             </div>
-
-            {/* <p>
-              {pathname.slice(1).slice(0, 1).toUpperCase() +
-                pathname.slice(1).slice(1).toLowerCase()}
-            </p> */}
           </div>
 
           <div
@@ -229,154 +192,12 @@ function App() {
           </div>
         </div>
       </div>
-      {/* 
-      {redirectUrl && pages.includes(redirectUrl) && (
-        <Navigate to={urls[redirectUrl]} replace />
-      )} */}
 
-      <Routes>
-        <Route
-          index
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <SignUp />
-            </>
-          }
-        />
+      {/* routes */}
 
-        <Route
-          path="/signin"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <SignIn />
-            </>
-          }
-        />
-
-        <Route
-          path="/signup"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <SignUp />
-            </>
-          }
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <Dashboard />
-            </>
-          }
-        />
-
-        <Route
-          path="/mystore"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <MyStore />
-            </>
-          }
-        />
-
-        <Route
-          path="/inventory"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <Inventory />
-            </>
-          }
-        />
-
-        <Route
-          path="/product-onboarding"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <ProductOnBoarding />
-            </>
-          }
-        />
-
-        <Route
-          path="/product-page"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <ProductPage />
-            </>
-          }
-        />
-
-        <Route
-          path="/voice"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <Voice />
-            </>
-          }
-        />
-        <Route
-          path="/store-onboarding"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <StoreOnboarding />
-            </>
-          }
-        />
-        <Route
-          path="/live/:shareable_id"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <LivePage />
-            </>
-          }
-        />
-        <Route
-          path="/firestore"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <Firestore />
-            </>
-          }
-        />
-        <Route
-          path="/product-upload"
-          element={
-            <>
-              <PageTitle title="Vyapar Launchpad" />
-              <ProductUpload />
-            </>
-          }
-        />
-      </Routes>
+      <Pages />
     </DefaultLayout>
   );
 }
 
 export default App;
-
-// import React from "react";
-// import GptChat from './voiceCommands/chatConvo.tsx';
-
-// function App() {
-//   return (
-//     <div>
-//       <h1>Chat with GPT</h1>
-//       <GptChat />
-//     </div>
-//   );
-// }
-
-// export default App;

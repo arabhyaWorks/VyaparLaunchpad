@@ -22,6 +22,7 @@ const commands = [
   "Set up my *",
   "setup my *",
   "what *",
+  "what is *",
   "* kya hai",
   "vyapar launchpad * "
 ]
