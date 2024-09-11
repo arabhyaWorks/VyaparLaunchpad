@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import axios from "axios";
 
 const Dictaphone = () => {
   const [message, setMessage] = useState("");
@@ -13,6 +14,7 @@ const Dictaphone = () => {
         setMessage(`Your order is for: ${food}`);
         setIsListening(false);
         SpeechRecognition.stopListening();
+        resetTranscript();
 
         // listening = false;
       },
@@ -78,10 +80,38 @@ const Dictaphone = () => {
     return null;
   }
 
+  const fetchAnswers = async (query) => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/ask",
+        // "http://ec2-3-86-240-66.compute-1.amazonaws.com/ask",
+        {
+          question: query,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      return response.data.answer;
+    } catch (error) {
+      console.error(
+        "Error querying API:",
+        error.response ? error.response.data : error.message
+      );
+    //   return error.message;
+    }
+  };
+
   useEffect(() => {
     if (isListening === true) {
       if (listening === false) {
         console.log("Asnwering your query", transcript);
+        fetchAnswers(transcript).then((answer) => {
+          setMessage(answer);
+        });
         resetTranscript();
       }
     }
