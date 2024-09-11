@@ -1,10 +1,82 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import generateDummydData from "./utils/generateDummy";
+
+import {
+  doc,
+  addDoc,
+  collection,
+  updateDoc,
+  serverTimestamp,
+  getDocs,
+  query,
+  where,
+  Timestamp,
+} from "firebase/firestore";
+import firestore from "./firebaseconfig";
+
 const Firestore = () => {
+  const [data, setData] = useState([]);
+  const getTodayOrders = async () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to start of the day
+
+    const startTimestamp = Timestamp.fromDate(today);
+    const endTimestamp = Timestamp.fromDate(new Date()); // Current time
+
+    const q = query(
+      collection(firestore, "orders"),
+      where("timestamp", ">=", startTimestamp),
+      where("timestamp", "<=", endTimestamp)
+    );
+
+    const querySnapshot = await getDocs(q);
+    setData(querySnapshot.docs.map((doc) => doc.data()));
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+
+
+  };
+
+  const getOrdersByDateRange = async (startDate, endDate) => {
+    const startTimestamp = Timestamp.fromDate(new Date(startDate));
+    const endTimestamp = Timestamp.fromDate(new Date(endDate));
+  
+    const q = query(
+      collection(firestore, "orders"),
+      where("timestamp", ">=", startTimestamp),
+      where("timestamp", "<=", endTimestamp)
+    );
+  
+    const querySnapshot = await getDocs(q);
+    setData(querySnapshot.docs.map((doc) => doc.data()));
+
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+  };
+
+  useEffect(() => {
+    // getTodayOrders();
+    getOrdersByDateRange("2024-09-01", "2024-09-07");
+  }, []);
   return (
     <div>
       <h1>Firestore</h1>
-      <button onClick={generateDummydData}>Add Dummy Orders</button>
+
+      <div>
+        {data?.map((item) => {
+          return (
+            <div style={{ color: "black" }} key={item.upk}>
+              <h3>{item.customer_name}</h3>
+              <p>{item.product_name}</p>
+              <p>{item.orderedOn}</p>
+            </div>
+          );
+        })}{" "}
+      </div>
+
+      {/* <button onClick={getTodayOrders}>Add Dummy Orders</button> */}
     </div>
   );
 };
