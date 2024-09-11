@@ -13,8 +13,10 @@ import ProductVariations from "./Pages/ProductVariation";
 import Companyupload from "./Pages/Companyupload";
 import ProductImages from "./Pages/ProductImages";
 
-import { collection, addDoc, updateDoc, doc } from "firebase/firestore";
-import firestore from "../../firestore";
+import { collection, addDoc, updateDoc, doc, Timestamp } from "firebase/firestore";
+import firestore from "../../firebaseconfig";
+import { time } from "console";
+// import firestore from "../../firestore";
 
 const aiUrl = (import.meta as any).env.VITE_BASE_AI_API;
 const backendUrl = (import.meta as any).env.VITE_BASE_API;
@@ -24,15 +26,22 @@ const photoRoomApi = "sandbox_bf94ab81f439e8cc7c75b8e42607c85d9d4345d5";
 const uploadProduct = async (productData) => {
   const data = {
     name: productData.response.ProductName,
-    category: productData.ProductCategory,
+    category: productData.productCategory,
     pricing: productData.pricing,
     quantity: productData.quantity,
     tagline: productData.response.ProductTagline,
     description: productData.response.ProductDescription,
     variation: productData.response.ProductVariation,
-    images: productData.images.map((image) => {
-      return `https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${image}&apiKey=${photoRoomApi}`;
-    }),
+    // images: productData.images.map((image) => {
+    //   // return `https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${image}&apiKey=${photoRoomApi}`;
+    //   return `https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${image}&apiKey=${photoRoomApi}`;
+    // }),
+
+    images: [
+      "https://image-api.photoroom.com/v2/edit?background.prompt=Please%20change%20the%20background%20of%20the%20input%20Image%20such%20that%20they%20are%20Ecommerce%20ready.%20The%20product%20is%20called%20Earthen%20Water%20bottle&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=https://vyaparbackend.s3.amazonaws.com/uploads/image3.jpg&apiKey=sandbox_bf94ab81f439e8cc7c75b8e42607c85d9d4345d5",
+      "https://image-api.photoroom.com/v2/edit?background.prompt=Please%20change%20the%20background%20of%20the%20input%20Image%20such%20that%20they%20are%20Ecommerce%20ready.%20The%20product%20is%20called%20Earthen%20Water%20bottle&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=https://vyaparbackend.s3.amazonaws.com/uploads/image3.jpg&apiKey=sandbox_bf94ab81f439e8cc7c75b8e42607c85d9d4345d5",
+      "https://image-api.photoroom.com/v2/edit?background.prompt=Please%20change%20the%20background%20of%20the%20input%20Image%20such%20that%20they%20are%20Ecommerce%20ready.%20The%20product%20is%20called%20Earthen%20Water%20bottle&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=https://vyaparbackend.s3.amazonaws.com/uploads/image3.jpg&apiKey=sandbox_bf94ab81f439e8cc7c75b8e42607c85d9d4345d5",
+    ],
     about: productData.response.AboutProduct,
     marketPainPoints: productData.response.MarketPainPoints,
     customerAcquisition: productData.response.CustomerAcquisition,
@@ -41,6 +50,7 @@ const uploadProduct = async (productData) => {
     regionalNames: productData.response.ProductRegionalNames,
     sellerId: "+919452624111",
     createdAt: new Date(),
+    Timestamp: Timestamp.now(),
   };
 
   console.log("Product data to be uploaded:", data);
