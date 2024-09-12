@@ -33,29 +33,58 @@ const getOrdersByDateRange = async (startDate, endDate, setData) => {
   //   });
 };
 
-const fetchAnswers = async (query) => {
-  try {
-    const response = await axios.post(
-      "http://127.0.0.1:8000/ask",
-      // "http://ec2-3-86-240-66.compute-1.amazonaws.com/ask",
-      {
-        question: query,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+// fetching answers from ask nandi
+// const fetchAnswers = async (query) => {
+//   try {
+//     const response = await axios.post(
+//       "http://127.0.0.1:8000/ask",
+//       // "http://ec2-3-86-240-66.compute-1.amazonaws.com/ask",
+//       {
+//         question: query,
+//       },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
 
-    return response.data.answer;
-  } catch (error) {
-    console.error(
-      "Error querying API:",
-      error.response ? error.response.data : error.message
-    );
-    //   return error.message;
-  }
+//     return response.data.answer;
+//   } catch (error) {
+//     console.error(
+//       "Error querying API:",
+//       error.response ? error.response.data : error.message
+//     );
+//     //   return error.message;
+//   }
+// };
+
+const fetchAnswers = async (query) => {
+    console.log("Fetching answers for query:", query);
+    const apiUrl = 'http://localhost:3000/answer';  // Replace with the actual endpoint
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: query,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error in fetching response from API');
+      }
+  
+      const data = await response.json();
+      console.log('Response:', data);
+      return data; // The answer from Abhipray
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
 };
 
 // Function to classify the query
