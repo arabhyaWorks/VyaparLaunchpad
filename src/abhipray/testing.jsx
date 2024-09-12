@@ -7,6 +7,7 @@ import axios from "axios";
 const Dictaphone = () => {
   const [message, setMessage] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [query, setQuery] = useState("");
   const commands = [
     {
       command: "I would like to order *",
@@ -80,6 +81,42 @@ const Dictaphone = () => {
     return null;
   }
 
+  // Function to classify the query
+  const classifyQuery = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/classify",
+        {
+          query: query, // Query entered by the user
+          variables: {}, // Any additional variables can be passed here
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const rawString = response.data;
+      // console.log(response.data);
+      let jsonString = rawString.replace(/'/g, '"');
+      jsonString = jsonString.replace(/(\w+):/g, '"$1":');
+      // console.log(jsonString);
+
+      try {
+        const parsedData = JSON.parse(jsonString);
+        console.log(parsedData);
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+      }
+    } catch (error) {
+      console.error(
+        "Error classifying query:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   const fetchAnswers = async (query) => {
     try {
       const response = await axios.post(
@@ -101,7 +138,7 @@ const Dictaphone = () => {
         "Error querying API:",
         error.response ? error.response.data : error.message
       );
-    //   return error.message;
+      //   return error.message;
     }
   };
 
@@ -140,6 +177,16 @@ const Dictaphone = () => {
       <h1>this is dictaphone</h1>
       <p>{message}</p>
       <p>{transcript}</p>
+
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+        }}
+      />
+
+      <button onClick={classifyQuery}>Classify query</button>
     </div>
   );
 };

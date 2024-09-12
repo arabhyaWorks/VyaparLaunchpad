@@ -49,7 +49,10 @@ const Firestore = () => {
     );
   
     const querySnapshot = await getDocs(q);
-    setData(querySnapshot.docs.map((doc) => doc.data()));
+    const data = querySnapshot.docs.map((doc) => doc.data());
+    // setData(querySnapshot.docs.map((doc) => doc.data()));
+    setData(data);
+    console.log("sorted data",data);
 
     querySnapshot.forEach((doc) => {
       console.log(doc.id, " => ", doc.data());
@@ -58,7 +61,7 @@ const Firestore = () => {
 
   useEffect(() => {
     // getTodayOrders();
-    getOrdersByDateRange("2024-09-01", "2024-09-12");
+    getOrdersByDateRange("2024-09-08", "2024-09-09");
   }, []);
   return (
     <div>
