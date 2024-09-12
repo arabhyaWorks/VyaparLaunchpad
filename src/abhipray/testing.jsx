@@ -1,17 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import axios from "axios";
 // import getOrdersByDateRange from "../utils/fetchData";
-import { getOrdersByDateRange, fetchAnswers } from "../utils/fetchData";
+import {
+  getOrdersByDateRange,
+  fetchAnswers,
+  queryClassification,
+} from "../utils/fetchData";
 import "./testing.css";
+import strings from "../Strings/vyapar";
+
+const API_KEY =
+  "sk0Y4-IrxVJSOmP2V7umwEeUnxyWqCbvHSK4LzLRaAQ7yz4-_p6Mez3WTjD8-Bl0";
 
 const Dictaphone = () => {
   const [message, setMessage] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [query, setQuery] = useState("");
   const [data, setData] = useState([]);
+  const [audioSrc, setAudioSrc] = useState(null); // To store the fetched audio content
+  const audioRef = useRef(null); // Reference for the audio player
+
   const commands = [
     {
       command: "I would like to order *",
@@ -85,72 +96,15 @@ const Dictaphone = () => {
     return null;
   }
 
-  // Function to classify the query
-  const queryClassification = async (query) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/classify",
-        {
-          query: query,
-          variables: {},
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Parsing the crucial string data to json
-      const rawString = response.data;
-      let jsonString = rawString.replace(/'/g, '"');
-      jsonString = jsonString.replace(/(\w+):/g, '"$1":');
-      console.log(jsonString);
-
-      try {
-        const parsedData = JSON.parse(jsonString);
-        console.log(parsedData);
-        const data = {
-          type: "dynamic",
-          data: {
-            intent: "orders",
-            timePeriod: {
-              startDate: "2024-09-07",
-              endDate: "2024-09-12",
-            },
-          },
-        };
-
-        return parsedData;
-
-        // if (
-        //   parsedData.type === "dynamic" &&
-        //   parsedData.data.intent === "orders"
-        // ) {
-        //   getOrdersByDateRange(
-        //     parsedData.data.timePeriod.startDate,
-        //     parsedData.data.timePeriod.endDate,
-        //     setData
-        //   );
-        // }
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
-      }
-    } catch (error) {
-      console.error(
-        "Error classifying query:",
-        error.response ? error.response.data : error.message
-      );
-    }
-  };
-
   // Function to handle static queries
   // Like How can I Onboard my product on ONDC?
   // What are the required documents to list your product on ONDC?
   // This function will directly fetch the answer from the API
   const handleStaticQuery = (query) => {
+    console.log("Fetching answers");
     fetchAnswers(query).then((answer) => {
       setMessage(answer);
+      fetchAudio(answer)
     });
   };
 
@@ -164,11 +118,98 @@ const Dictaphone = () => {
     }
   };
 
+  // const fetchAudio = async () => {
+  //   console.log("fetching audio")
+  //   const ttsResponse = await axios.post(
+  //     "https://dhruva-api.bhashini.gov.in/services/inference/pipeline",
+  //     {
+  //       pipelineTasks: [
+  //         {
+  //           taskType: "tts",
+  //           config: {
+  //             language: {
+  //               sourceLanguage: "hi",
+  //             },
+  //             serviceId: "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4",
+  //             gender: "male",
+  //             samplingRate: 48000,
+  //           },
+  //         },
+  //       ],
+  //       inputData: {
+  //         input: [{ source: strings[0] }],
+  //       },
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: API_KEY,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+
+  //   console.log(
+  //     "TTS Response:",
+  //     ttsResponse.data.pipelineResponse[0].audio[0].audioContent
+  //   );
+
+  //   const audioContent =
+  //     ttsResponse.data.pipelineResponse[0].audio[0].audioContent;
+  //   if (audioContent) {
+  //     const audio = new Audio(`data:audio/wav;base64,${audioContent}`);
+  //     audio.playbackRate = 1.04; // Adjust the speed if necessary
+  //     audio.play();
+  //   } else {
+  //     console.error("No audio content found in the response");
+  //   }
+  // };
+
+  const fetchAudio = async (string) => {
+    const ttsResponse = await axios.post(
+      "https://dhruva-api.bhashini.gov.in/services/inference/pipeline",
+      {
+        pipelineTasks: [
+          {
+            taskType: "tts",
+            config: {
+              language: {
+                sourceLanguage: "hi",
+              },
+              // English
+              // serviceId: "ai4bharat/indic-tts-coqui-misc-gpu--t4",
+              // Hindi
+              serviceId: "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4",
+              gender: "female",
+              samplingRate: 8000,
+            },
+          },
+        ],
+        inputData: {
+          input: [{ source: string }],
+          // input: [{ source: strings[0] }],
+        },
+      },
+      {
+        headers: {
+          Authorization: API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const audioContent =
+      ttsResponse.data.pipelineResponse[0].audio[0].audioContent;
+    if (audioContent) {
+      setAudioSrc(`data:audio/wav;base64,${audioContent}`); // Set the audio source
+    } else {
+      console.error("No audio content found in the response");
+    }
+  };
+
   // Handling recognition of quweries which are different from the voice commands
   useEffect(() => {
     if (isListening === true) {
       if (listening === false) {
-
         console.log("Classifing your query");
         console.log(transcript);
         console.log("");
@@ -184,6 +225,15 @@ const Dictaphone = () => {
       }
     }
   }, [listening]);
+
+  // useEffect(() => {
+  //   if (audioSrc) {
+  //     if (audioRef.current) {
+  //       audioRef.current.play(); // Play the audio
+  //     }
+  //     console.log("playing audio throug ref");
+  //   }
+  // }, [audioSrc, audioRef]);
 
   return (
     <div>
@@ -217,7 +267,19 @@ const Dictaphone = () => {
         }}
       /> */}
 
-      {/* <button onClick={queryClassification}>Classify query</button> */}
+      {/* <button onClick={fetchAudio}>Classify query</button> */}
+
+      {/* Render audio player */}
+
+      <h1>{audioSrc ? "true" : "false"}</h1>
+      {audioSrc && (
+        <div>
+          <audio ref={audioRef} controls>
+            <source src={audioSrc} type="audio/wav" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      )}
 
       <div>
         {data?.map((item) => {
@@ -234,4 +296,3 @@ const Dictaphone = () => {
   );
 };
 export default Dictaphone;
-

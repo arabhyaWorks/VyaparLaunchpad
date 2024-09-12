@@ -157,7 +157,7 @@ function App() {
     <Loader />
   ) : (
     <DefaultLayout>
-      <div style={{ display: "none" }} className="asis-cont">
+      <div style={{ display: "block" }} className="asis-cont">
         <div
           className={`assitant ${
             pathname === "/store-onboarding" ? "left" : "right"

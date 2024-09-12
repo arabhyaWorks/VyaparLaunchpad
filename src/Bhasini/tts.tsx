@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_KEY = "sk0Y4-IrxVJSOmP2V7umwEeUnxyWqCbvHSK4LzLRaAQ7yz4-_p6Mez3WTjD8-Bl0";
-
+const API_KEY =
+  "sk0Y4-IrxVJSOmP2V7umwEeUnxyWqCbvHSK4LzLRaAQ7yz4-_p6Mez3WTjD8-Bl0";
 
 const playTTS = async (text, languageCode) => {
   if (!text || !languageCode) {
@@ -9,8 +9,8 @@ const playTTS = async (text, languageCode) => {
     return;
   }
 
-  console.log("this is somethign")
-  console.log(text, languageCode)
+  console.log("this is somethign");
+  console.log(text, languageCode);
 
   //   try {
   //     const ttsResponse = await axios.post(

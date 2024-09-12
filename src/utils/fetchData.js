@@ -58,4 +58,63 @@ const fetchAnswers = async (query) => {
   }
 };
 
-export { getOrdersByDateRange, fetchAnswers };
+// Function to classify the query
+const queryClassification = async (query) => {
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/classify",
+      {
+        query: query,
+        variables: {},
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Parsing the crucial string data to json
+    const rawString = response.data;
+    let jsonString = rawString.replace(/'/g, '"');
+    jsonString = jsonString.replace(/(\w+):/g, '"$1":');
+    console.log(jsonString);
+
+    try {
+      const parsedData = JSON.parse(jsonString);
+      console.log(parsedData);
+      const data = {
+        type: "dynamic",
+        data: {
+          intent: "orders",
+          timePeriod: {
+            startDate: "2024-09-07",
+            endDate: "2024-09-12",
+          },
+        },
+      };
+
+      return parsedData;
+
+      // if (
+      //   parsedData.type === "dynamic" &&
+      //   parsedData.data.intent === "orders"
+      // ) {
+      //   getOrdersByDateRange(
+      //     parsedData.data.timePeriod.startDate,
+      //     parsedData.data.timePeriod.endDate,
+      //     setData
+      //   );
+      // }
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+    }
+  } catch (error) {
+    console.error(
+      "Error classifying query:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
+export { getOrdersByDateRange, fetchAnswers, queryClassification };
