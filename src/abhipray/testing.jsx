@@ -40,17 +40,22 @@ const Dictaphone = () => {
   const fetchAudio = async (text) => {
     const ttsResponse = await axios.post(
       "https://dhruva-api.bhashini.gov.in/services/inference/pipeline",
+      // https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline
       {
         pipelineTasks: [
           {
             taskType: "tts",
             config: {
               language: {
-                sourceLanguage: "hi",
+                sourceLanguage: "en",
               },
-              serviceId: "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4",
-              gender: "female",
-              samplingRate: 8000,
+              // serviceId: "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4",
+              // serviceId: "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4",
+              serviceId: "ai4bharat/indic-tts-coqui-misc-gpu--t4",
+              // AI4Bharat Indic-TTS : English_Latin
+              gender: "male",
+              samplingRate: 16000,
+              // samplingRate: 22050,
             },
           },
         ],
@@ -80,6 +85,8 @@ const Dictaphone = () => {
       audioRef.current.src = audioSrc; // Update the audio element source
       audioRef.current.load(); // Reload the audio element with the new source
       audioRef.current.play(); // Play the new audio
+      audioRef.current.playbackRate = 1.08; // Set the playback speed to 1.08x
+
     }
   }, [audioSrc]);
 
@@ -123,7 +130,8 @@ const Dictaphone = () => {
         <p>Microphone: {listening ? "on" : "off"}</p>
         <button
           onClick={() => {
-            SpeechRecognition.startListening();
+            // SpeechRecognition.startListening({language: 'hi-IN'});
+            SpeechRecognition.startListening()
             setIsListening(true);
           }}
         >
