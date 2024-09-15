@@ -21,10 +21,9 @@ const commands = [
   "Mera * set up karo",
   "Set up my *",
   "setup my *",
-  "what *",
-  "what is *",
-  "* kya hai",
-  "vyapar launchpad * "
+  "Mera * list karo",
+  "मेरा * लिस्ट करो"
+  
 ]
 
 export default commands;

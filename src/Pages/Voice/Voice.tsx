@@ -66,21 +66,36 @@ const ttsServiceIds = {
   // ta: "ai4bharat/indic-tts-coqui-dravidian-gpu--t4",
 };
 
-const QUESTIONS: string[] = [
-  "Hello, I'm Vyapar Sathi! 👋 Welcome to Vyapar Launchpad. Let's list your product.",
-  "What is the shop name?",
-  "What is the seller state?",
-  "What is the product language?",
-  "What is the product category?",
-  "What is the product name?",
-  "What is the price of the product?",
-  "What is the product description?",
-  "What are the product variations?",
-  "Please upload the company logo.",
-  "Please upload the product images.",
-];
+// const QUESTIONS: string[] = [
+//   "Hello, I'm Vyapar Sathi! 👋 Welcome to Vyapar Launchpad. Let's list your product.",
+//   "What is the shop name?",
+//   "What is the seller state?",
+//   "What is the product language?",
+//   "What is the product category?",
+//   "What is the product name?",
+//   "What is the price of the product?",
+//   "What is the product description?",
+//   "What are the product variations?",
+//   "Please upload the company logo.",
+//   "Please upload the product images.",
+// ];
 
-const aiUrl = (import.meta as any).env.VITE_BASE_AI_API;
+
+const QUESTIONS: string[] = [
+  "नमस्कार, मैं व्यापार साथी हूँ! 👋 व्यापार लॉन्चपैड में आपका स्वागत है। आइए आपके उत्पाद को सूचीबद्ध करें।",
+  "दुकान का नाम क्या है?",
+  "विक्रेता का राज्य कौन सा है?",
+  "उत्पाद की भाषा क्या है?",
+  "उत्पाद की श्रेणी क्या है?",
+  "उत्पाद का नाम क्या है?",
+  "उत्पाद की कीमत क्या है?",
+  "उत्पाद का विवरण क्या है?",
+  "उत्पाद के प्रकार/विविधताएँ क्या हैं?",
+  "कृपया कंपनी का लोगो अपलोड करें।",
+  "कृपया उत्पाद की छवियाँ अपलोड करें।",
+];
+// const aiUrl = (import.meta as any).env.VITE_BASE_AI_API;
+const aiUrl = "http://127.0.0.1:8000/"
 const backendUrl = (import.meta as any).env.VITE_BASE_API;
 const photAiApiKey = "667bd78dc03bdd1cb404e7a0_3668c766b56f00a1de05_apyhitools";
 const photoroomApi = "sandbox_bf94ab81f439e8cc7c75b8e42607c85d9d4345d5";
@@ -203,11 +218,11 @@ const Voice: React.FC = () => {
         }
       );
 
-      const translatedText =
-        translationResponse.data.pipelineResponse[0].output[0].target;
+      // const translatedText =
+      //   translationResponse.data.pipelineResponse[0].output[0].target;
 
-      console.log("translatedText", translatedText);
-      console.log("language", ttsServiceIds[language], language, personSpeech);
+      // console.log("translatedText", translatedText);
+      // console.log("language", ttsServiceIds[language], language, personSpeech);
 
       //   "https://dhruva-api.bhashini.gov.in/services/inference/pipeline",
       //   {
@@ -253,7 +268,7 @@ const Voice: React.FC = () => {
             },
           ],
           inputData: {
-            input: [{ source: translatedText }],
+            input: [{ source: question }],
           },
         },
         {

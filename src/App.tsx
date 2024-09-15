@@ -39,6 +39,7 @@ function App() {
 
   const [message, setMessage] = useState("");
   const [stateData, setStateData] = useState("");
+  // const [voiceState, setVoiceState] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [showingCaption, setShowingCaption] = useState(false);
   const [data, setData] = useState([]);
@@ -97,16 +98,19 @@ function App() {
 
     if (pageMatch) {
       navigate(pageMatch.path);
-    } else if (
-      redirectPage.includes("ondc") ||
-      redirectPage.includes("ondc") ||
-      redirectPage.includes("vyapar")
-    ) {
-      // handleQueryAboutVyapar();
+
+      console.log("stopping the stuffs to happen");
+      setIsListening(false);
+      SpeechRecognition.stopListening();
+      resetTranscript();
     } else {
       console.log("Invalid command.");
       console.log(redirectPage, transcript);
       setIsInValid(true);
+      console.log("stopping the stuffs to happen");
+      setIsListening(false);
+      SpeechRecognition.stopListening();
+      resetTranscript();
     }
   }
 
@@ -157,9 +161,10 @@ function App() {
   // Handling recognition of queries and classification
   useEffect(() => {
     if (isListening === true) {
-      if (listening === false) {
+      if (listening === false && transcript.length > 0) {
         console.log("Classifying your query...");
-        setStateData("आपका प्रश्न का वर्गीकरण कर रहा हूँ|");
+        setStateData("Classifying your query");
+        // setStateData("आपका प्रश्न का वर्गीकरण कर रहा हूँ|");
         queryClassification(transcript).then((classifiedData) => {
           if (classifiedData.type === "static") {
             handleStaticQuery(transcript);
@@ -170,14 +175,14 @@ function App() {
         resetTranscript();
       }
     }
-  }, [listening, isListening]);
-``
+  }, [listening]);
 
   const handleStaticQuery = (query) => {
-    setStateData("आपके प्रश्न का उत्तर लाया जा रहा है।");
+    // setStateData("आपके प्रश्न का उत्तर लाया जा रहा है।");
+    setStateData("fetching the asnwer of the question.");
     fetchAnswers(query).then((answer) => {
       setMessage(answer);
-      setStateData("ऑडियो उत्पन्न कर रहा हूँ|");
+      setStateData("Generating the audio for the answer.");
       fetchAudio(answer); // Fetch the audio for the answer
     });
   };
@@ -233,7 +238,6 @@ function App() {
     if (audioSrc && audioRef.current) {
       audioRef.current.src = audioSrc; // Update the audio element source
       audioRef.current.load(); // Reload the audio element with the new source
-
       audioRef.current.play(); // Play the new audio
       setStateData("");
       SpeechRecognition.startListening();
@@ -252,7 +256,15 @@ function App() {
     <Loader />
   ) : (
     <DefaultLayout>
-      <div style={{ display: "block" }} className="asis-cont">
+      <div
+        style={{
+          display:
+            pathname === "/voice" || pathname === "/product-page"
+              ? "none"
+              : "block",
+        }}
+        className="asis-cont"
+      >
         <div
           className={`assitant ${
             pathname === "/store-onboarding" ? "left" : "right"
@@ -274,12 +286,11 @@ function App() {
           <div className="asis">
             <div className="transcript-cont" ref={transcriptRef}>
               <p className="transcript">
+                {/* "नमस्ते, मैं व्यापार साथी हूँ!🙏 चलिए आपके डिजिटल स्टोर को ONDC पर ऑनबोर्ड करते हैं।" */}
                 {transcript.length === 0
-                  ? // ? "This is Vyapar Sathi! 🙏 Let's onboard your digital store on ONDC."
-                    stateData
+                  ? stateData
                     ? stateData
-                    // : "This is Vyapar Sathi! 🙏 Let's onboard your digital store on ONDC."
-                    : "नमस्ते, मैं व्यापार साथी हूँ!🙏 चलिए आपके डिजिटल स्टोर को ONDC पर ऑनबोर्ड करते हैं।"
+                    : "This is Vyapar Sathi! 🙏 Let's onboard your digital store on ONDC."
                   : transcript}
               </p>
             </div>
@@ -300,7 +311,8 @@ function App() {
                   }
                 } else {
                   if (!audioSrc) {
-                    SpeechRecognition.startListening({language: 'hi-IN'});
+                    SpeechRecognition.startListening();
+                    // SpeechRecognition.startListening({language: 'hi-IN'});
                     setIsListening(true);
                   } else {
                     if (audioRef.current) {

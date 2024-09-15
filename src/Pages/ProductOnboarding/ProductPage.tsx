@@ -7,7 +7,9 @@ import User from "../../assets/Icons/personOutline.svg";
 import search from "../../assets/Icons/searchOutline.svg";
 import CopyButton from "../../assets/Icons/copyButton.svg";
 import BackIcon from "../../assets/Icons/backIcon.svg";
-import Img1 from "../../assets/images/sareeImage.png";
+import img1 from "../../assets/img1.jpg";
+import img2 from "../../assets/img2.jpg";
+import img3 from "../../assets/img3.jpg";
 import OverLayBG from "../../assets/images/OverlayBackground.svg";
 import Text from "../../Bhasini/Text";
 
@@ -461,30 +463,55 @@ const ProductPage = () => {
             </div>
           )}
 
-          {productData.images && productData.images.length > 0 && (
+
+          {/* {productData.images && productData.images.length > 0 && ( */}
             <div className="w-[37rem]">
               <div className="flex justify-center mt-8">
                 <img
                   className="rounded-lg shadow-2xl shadow-lg"
                   style={{ width: "20rem", height: "20rem" }}
-                  src={`https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${productData.images[0]}&apiKey=${photoroomApi}`}
+                  // src={`https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${productData.images[0]}&apiKey=${photoroomApi}`}
+                  src={img1}
                 />
               </div>
 
-              {productData.images.length > 1 && (
+
+              {/* {productData.images.length > 1 && ( */}
                 <div className="flex justify-center gap-2 mt-8">
-                  {productData.images.slice(1).map((img, index) => (
-                    <div className="w-[72px]" key={index}>
+                  {/* {productData.images.slice(1).map((img, index) => ( */}
+                    <div className="w-[72px]">
                       <img
-                        src={`https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${img}&apiKey=${photoroomApi}`}
+                        // src={`https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${img}&apiKey=${photoroomApi}`}
                         className="w-full h-auto rounded-lg shadow-lg"
+                        src={img2}
                       />
                     </div>
-                  ))}
+                    <div className="w-[72px]">
+                      <img
+                        // src={`https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${img}&apiKey=${photoroomApi}`}
+                        className="w-full h-auto rounded-lg shadow-lg"
+                        src={img2}
+                      />
+                    </div>
+                    <div className="w-[72px]">
+                      <img
+                        // src={`https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${img}&apiKey=${photoroomApi}`}
+                        className="w-full h-auto rounded-lg shadow-lg"
+                        src={img3}
+                      />
+                    </div>
+                    <div className="w-[72px]">
+                      <img
+                        // src={`https://image-api.photoroom.com/v2/edit?background.prompt=${productData.prompt}&background.seed=42&outputSize=1000x1000&padding=0.1&imageUrl=${img}&apiKey=${photoroomApi}`}
+                        className="w-full h-auto rounded-lg shadow-lg"
+                        src={img3}
+                      />
+                    </div>
+                  {/* ))} */}
                 </div>
-              )}
+              {/* )} */}
             </div>
-          )}
+          {/* )} */}
 
           {productData.response.SeoFriendlyTags &&
             productData.response.SeoFriendlyTags.length > 0 && (

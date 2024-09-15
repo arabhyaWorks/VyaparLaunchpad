@@ -113,16 +113,7 @@ function App() {
     "store-onboarding",
     "voice",
   ];
-  const urls = {
-    home: "/",
-    dashboard: "/dashboard",
-    mystore: "/mystore",
-    inventory: "/inventory",
-    signin: "/signin",
-    signup: "/signup",
-    "store-onboarding": "/store-onboarding",
-    voice: "/voice",
-  };
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
