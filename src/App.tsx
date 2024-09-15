@@ -1,236 +1,327 @@
-// import React, { useEffect, useContext, useState, useRef } from "react";
-// import {
-//   BrowserRouter,
-//   Link,
-//   Navigate,
-//   Route,
-//   Routes,
-//   useLocation,
-//   useNavigate,
-// } from "react-router-dom";
-// import SpeechRecognition, {
-//   useSpeechRecognition,
-// } from "react-speech-recognition";
-// import { AppContext } from "./AppContext";
-// import "./App.css";
-// import playTTS from "./Bhasini/tts";
-// import SiriAnimation from "./SiriAnimation";
-// import Loader from "./components/common/Loader";
-// import DefaultLayout from "./layout/DefaultLayout";
-// import commands from "./voiceCommands";
-// import Pages from "./Routes";
+import React, { useEffect, useContext, useState, useRef } from "react";
+import {
+  BrowserRouter,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import { AppContext } from "./AppContext";
+import "./App.css";
+import playTTS from "./Bhasini/tts";
+import SiriAnimation from "./SiriAnimation";
+import Loader from "./components/common/Loader";
+import DefaultLayout from "./layout/DefaultLayout";
+import commands from "./voiceCommands";
+import Pages from "./Routes";
+import axios from "axios";
+import { fetchAnswers } from "./utils/fetchData";
+import { getOrdersByDateRange } from "./utils/fetchData";
+import { queryClassification } from "./utils/fetchData";
 
-// const apiUrl = (import.meta as any).env.VITE_BASE_API;
+const API_KEY =
+  "sk0Y4-IrxVJSOmP2V7umwEeUnxyWqCbvHSK4LzLRaAQ7yz4-_p6Mez3WTjD8-Bl0";
 
-// function App() {
-//   const navigate = useNavigate();
-//   const { pathname } = useLocation();
-//   const { loading, setLoading } = useContext(AppContext) || {};
+const apiUrl = (import.meta as any).env.VITE_BASE_API;
 
-//   const [redirectUrl, setRedirectUrl] = useState("");
-//   const [isInValid, setIsInValid] = useState(false);
+function App() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { loading, setLoading } = useContext(AppContext) || {};
 
-//   const { transcript, listening, resetTranscript } = useSpeechRecognition({
-//     commands: [
-//       {
-//         command: commands,
-//         callback: handleVoiceCommand,
-//       },
-//     ],
-//   });
+  const [redirectUrl, setRedirectUrl] = useState("");
+  const [isInValid, setIsInValid] = useState(false);
 
-//   const pages = [
-//     "home",
-//     "dashboard",
-//     "mystore",
-//     "inventory",
-//     "signin",
-//     "signup",
-//     "store-onboarding",
-//     "voice",
-//   ];
+  const [message, setMessage] = useState("");
+  const [stateData, setStateData] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [showingCaption, setShowingCaption] = useState(false);
+  const [data, setData] = useState([]);
+  const [audioSrc, setAudioSrc] = useState(null);
+  const audioRef = useRef(null);
 
-//   const urls = {
-//     home: "/",
-//     dashboard: "/dashboard",
-//     mystore: "/mystore",
-//     inventory: "/inventory",
-//     signin: "/signin",
-//     signup: "/signup",
-//     "store-onboarding": "/store-onboarding",
-//     voice: "/voice",
-//   };
+  const { transcript, listening, resetTranscript } = useSpeechRecognition({
+    commands: [
+      {
+        command: commands,
+        callback: handleVoiceCommand,
+      },
+    ],
+  });
 
-//   function handleVoiceCommand(redirectPage: string) {
-//     redirectPage = redirectPage.toLowerCase();
-//     console.log("Redirecting to:", redirectPage);
+  // Pages to redirect to
+  const pages = [
+    "home",
+    "dashboard",
+    "mystore",
+    "inventory",
+    "signin",
+    "signup",
+    "store-onboarding",
+    "voice",
+  ];
 
-//     const pageMappings = [
-//       { keywords: ["my store", "mystore"], path: "/mystore" },
-//       { keywords: ["dashboard"], path: "/dashboard" },
-//       { keywords: ["inventory"], path: "/inventory" },
-//       { keywords: ["sign in", "signin"], path: "/signin" },
-//       { keywords: ["sign up", "signup"], path: "/signup" },
-//       { keywords: ["voice"], path: "/voice" },
-//       {
-//         keywords: [
-//           "store onboarding",
-//           "store-onboarding",
-//           "dukaan",
-//           "store",
-//           "shop",
-//           "dukan",
-//         ],
-//         path: "/store-onboarding",
-//       },
-//     ];
+  // handling voice commands
+  function handleVoiceCommand(redirectPage: string) {
+    redirectPage = redirectPage.toLowerCase();
+    console.log("Redirecting to:", redirectPage);
 
-//     const pageMatch = pageMappings.find((page) =>
-//       page.keywords.some((keyword) => redirectPage.includes(keyword))
-//     );
+    const pageMappings = [
+      { keywords: ["my store", "mystore"], path: "/mystore" },
+      { keywords: ["dashboard"], path: "/dashboard" },
+      { keywords: ["inventory"], path: "/inventory" },
+      { keywords: ["sign in", "signin"], path: "/signin" },
+      { keywords: ["sign up", "signup"], path: "/signup" },
+      { keywords: ["voice"], path: "/voice" },
+      {
+        keywords: [
+          "store onboarding",
+          "store-onboarding",
+          "dukaan",
+          "store",
+          "shop",
+          "dukan",
+        ],
+        path: "/store-onboarding",
+      },
+    ];
 
-//     if (pageMatch) {
-//       navigate(pageMatch.path);
-//     } else if (
-//       redirectPage.includes("ondc") ||
-//       redirectPage.includes("ondc") ||
-//       redirectPage.includes("vyapar")
-//     ) {
-//       handleQueryAboutVyapar();
-//     } else {
-//       console.log("Invalid command.");
-//       console.log(redirectPage, transcript);
-//       setIsInValid(true);
-//     }
-//   }
+    const pageMatch = pageMappings.find((page) =>
+      page.keywords.some((keyword) => redirectPage.includes(keyword))
+    );
 
-//   function handleQueryAboutVyapar() {
-//     const data =
-//       "The Open Network for Digital Commerce (ONDC) is an initiative launched by the Government of India to democratize digital commerce and create a level playing field for small and medium enterprises (SMEs). ONDC promotes open networks developed on open-sourced methodology.";
-//     playTTS(data, "hi");
-//     console.log("Responding to query about Vyapar.");
-//   }
+    if (pageMatch) {
+      navigate(pageMatch.path);
+    } else if (
+      redirectPage.includes("ondc") ||
+      redirectPage.includes("ondc") ||
+      redirectPage.includes("vyapar")
+    ) {
+      // handleQueryAboutVyapar();
+    } else {
+      console.log("Invalid command.");
+      console.log(redirectPage, transcript);
+      setIsInValid(true);
+    }
+  }
 
-//   useEffect(() => {
-//     window.scrollTo(0, 0);
-//   }, [pathname]);
+  // Function to fetch the TTS audio data
+  const fetchAudio = async (text) => {
+    const ttsResponse = await axios.post(
+      "https://dhruva-api.bhashini.gov.in/services/inference/pipeline",
+      // https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline
+      {
+        pipelineTasks: [
+          {
+            taskType: "tts",
+            config: {
+              language: {
+                sourceLanguage: "en",
+              },
+              // serviceId: "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4",
+              // serviceId: "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4",
+              serviceId: "ai4bharat/indic-tts-coqui-misc-gpu--t4",
+              // AI4Bharat Indic-TTS : English_Latin
+              gender: "male",
+              samplingRate: 16000,
+              // samplingRate: 22050,
+            },
+          },
+        ],
+        inputData: {
+          input: [{ source: text }],
+        },
+      },
+      {
+        headers: {
+          Authorization: API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-//   useEffect(() => {
-//     if (setLoading) {
-//       const timer = setTimeout(() => setLoading(false), 1000);
-//       return () => clearTimeout(timer);
-//     }
-//   }, [setLoading]);
+    const audioContent =
+      ttsResponse.data.pipelineResponse[0].audio[0].audioContent;
+    if (audioContent) {
+      setAudioSrc(`data:audio/wav;base64,${audioContent}`); // Set the new audio source
+    } else {
+      console.error("No audio content found in the response");
+    }
+  };
 
-//   useEffect(() => {
-//     if (redirectUrl && pages.includes(redirectUrl)) {
-//       setRedirectUrl(redirectUrl);
-//     }
-//   }, [redirectUrl]);
+  // Handling recognition of queries and classification
+  useEffect(() => {
+    if (isListening === true) {
+      if (listening === false) {
+        console.log("Classifying your query...");
+        setStateData("आपका प्रश्न का वर्गीकरण कर रहा हूँ|");
+        queryClassification(transcript).then((classifiedData) => {
+          if (classifiedData.type === "static") {
+            handleStaticQuery(transcript);
+          } else {
+            handleDynamicQuery(classifiedData, transcript);
+          }
+        });
+        resetTranscript();
+      }
+    }
+  }, [listening, isListening]);
+``
 
-//   useEffect(() => {
-//     fetch(apiUrl)
-//       .then((response) => response.json())
-//       .then((data) => console.log("Connection successful:", data))
-//       .catch((error) => console.error("Error connecting to server:", error));
-//   }, []);
+  const handleStaticQuery = (query) => {
+    setStateData("आपके प्रश्न का उत्तर लाया जा रहा है।");
+    fetchAnswers(query).then((answer) => {
+      setMessage(answer);
+      setStateData("ऑडियो उत्पन्न कर रहा हूँ|");
+      fetchAudio(answer); // Fetch the audio for the answer
+    });
+  };
 
-//   if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
-//     return (
-//       <div>
-//         <h1 style={{ color: "black" }}>
-//           Browser doesn't support speech recognition.
-//         </h1>
-//       </div>
-//     );
-//   }
+  const handleDynamicQuery = (classifiedData, query) => {
+    if (classifiedData.data.intent === "orders") {
+      getOrdersByDateRange(
+        classifiedData.data.timePeriod.startDate,
+        classifiedData.data.timePeriod.endDate,
+        setData
+      );
+    }
+  };
 
-//   const transcriptRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
-//   useEffect(() => {
-//     if (transcriptRef.current) {
-//       transcriptRef.current.scrollTop = transcriptRef.current.scrollHeight;
-//     }
-//   }, [transcript]);
+  useEffect(() => {
+    if (setLoading) {
+      const timer = setTimeout(() => setLoading(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [setLoading]);
 
-//   return loading ? (
-//     <Loader />
-//   ) : (
-//     <DefaultLayout>
-//       <div style={{ display: "block" }} className="asis-cont">
-//         <div
-//           className={`assitant ${
-//             pathname === "/store-onboarding" ? "left" : "right"
-//           }`}
-//         >
-//           <div className="asis">
-//             <div className="transcript-cont" ref={transcriptRef}>
-//               <p className="transcript">
-//                 {transcript.length === 0
-//                   ? "This is Vyapar Sathi! 🙏 Let's onboard your digital store on ONDC."
-//                   : transcript}
-//               </p>
-//             </div>
-//           </div>
+  useEffect(() => {
+    if (redirectUrl && pages.includes(redirectUrl)) {
+      setRedirectUrl(redirectUrl);
+    }
+  }, [redirectUrl]);
 
-//           <div
-//             className={`siri ${
-//               pathname === "/store-onboarding" ? "siri-left" : "siri-right"
-//             }`}
-//           >
-//             <SiriAnimation
-//               onClick={() => {
-//                 if (listening) {
-//                   SpeechRecognition.stopListening();
-//                 } else {
-//                   SpeechRecognition.startListening();
-//                 }
-//               }}
-//               length={transcript}
-//               listening={listening}
-//             />
-//           </div>
-//         </div>
-//       </div>
+  useEffect(() => {
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => console.log("Connection successful:", data))
+      .catch((error) => console.error("Error connecting to server:", error));
+  }, []);
 
-//       {/* routes */}
+  if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+    return (
+      <div>
+        <h1 style={{ color: "black" }}>
+          Browser doesn't support speech recognition.
+        </h1>
+      </div>
+    );
+  }
 
-//       <Pages />
-//     </DefaultLayout>
-//   );
-// }
+  const transcriptRef = useRef<HTMLDivElement>(null);
 
-// export default App;
+  // Handle playing the new audio when audioSrc updates
+  useEffect(() => {
+    if (audioSrc && audioRef.current) {
+      audioRef.current.src = audioSrc; // Update the audio element source
+      audioRef.current.load(); // Reload the audio element with the new source
 
+      audioRef.current.play(); // Play the new audio
+      setStateData("");
+      SpeechRecognition.startListening();
+      setIsListening(false);
+      audioRef.current.playbackRate = 1.1; // Set the playback speed to 1.08x
+    }
+  }, [audioSrc]);
 
-import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
-import React from "react";
+  useEffect(() => {
+    if (transcriptRef.current) {
+      transcriptRef.current.scrollTop = transcriptRef.current.scrollHeight;
+    }
+  }, [transcript]);
 
-export function NeonGradientCardDemo(): React.ReactNode {
-  return (
-    <NeonGradientCard className="max-w-sm items-center justify-center text-center">
-      <span className="pointer-events-none z-10 h-full whitespace-pre-wrap bg-gradient-to-br from-[#ff2975] from-35% to-[#00FFF1] bg-clip-text text-center text-6xl font-bold leading-none tracking-tighter text-transparent dark:drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">
-        Neon Gradient Card
-      </span>
-    </NeonGradientCard>
+  return loading ? (
+    <Loader />
+  ) : (
+    <DefaultLayout>
+      <div style={{ display: "block" }} className="asis-cont">
+        <div
+          className={`assitant ${
+            pathname === "/store-onboarding" ? "left" : "right"
+          }`}
+        >
+          {/* Render audio player */}
+          {audioSrc && (
+            <div
+              style={{
+                opacity: 0,
+              }}
+            >
+              <audio ref={audioRef} controls>
+                <source src={audioSrc} type="audio/wav" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          )}
+          <div className="asis">
+            <div className="transcript-cont" ref={transcriptRef}>
+              <p className="transcript">
+                {transcript.length === 0
+                  ? // ? "This is Vyapar Sathi! 🙏 Let's onboard your digital store on ONDC."
+                    stateData
+                    ? stateData
+                    // : "This is Vyapar Sathi! 🙏 Let's onboard your digital store on ONDC."
+                    : "नमस्ते, मैं व्यापार साथी हूँ!🙏 चलिए आपके डिजिटल स्टोर को ONDC पर ऑनबोर्ड करते हैं।"
+                  : transcript}
+              </p>
+            </div>
+          </div>
+
+          <div
+            className={`siri ${
+              pathname === "/store-onboarding" ? "siri-left" : "siri-right"
+            }`}
+          >
+            <SiriAnimation
+              onClick={() => {
+                if (listening) {
+                  SpeechRecognition.stopListening();
+                  if (audioRef && audioRef.current) {
+                    audioRef.current.pause();
+                    setAudioSrc(null);
+                  }
+                } else {
+                  if (!audioSrc) {
+                    SpeechRecognition.startListening({language: 'hi-IN'});
+                    setIsListening(true);
+                  } else {
+                    if (audioRef.current) {
+                      audioRef.current.pause(); // Play the new audio
+                      setAudioSrc(null);
+                    }
+                  }
+                }
+              }}
+              length={transcript}
+              listening={listening}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* routes */}
+
+      <Pages />
+    </DefaultLayout>
   );
 }
 
-
-export default function App(){
-  return(
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-
-      <NeonGradientCardDemo />
-
-
-    </div>
-  )
-}
+export default App;
